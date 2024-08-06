@@ -5,7 +5,7 @@ import os
 
 datasetnumber = 5
 gps_type = '_GPS_xyz'
-destination = '_my_scale'
+destination = '_my_scale_and_transformation'
 source = '/Scale_B'
 
 chosen_point_index_GPS = 50  # Example index for the chosen point for GPS

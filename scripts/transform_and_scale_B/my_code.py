@@ -34,7 +34,6 @@ def read_data(file_path):
 
     return np.array(slam_points), np.array(gps_points), np.array(timestamps)
 
-
 def compute_scaling_factors(slam_points, gps_points):
     s_x = (gps_points[:, 0].max() - gps_points[:, 0].min()) / (slam_points[:, 0].max() - slam_points[:, 0].min()) if slam_points[:, 0].max() != slam_points[:, 0].min() else 1
     s_y = (gps_points[:, 1].max() - gps_points[:, 1].min()) / (slam_points[:, 1].max() - slam_points[:, 1].min()) if slam_points[:, 1].max() != slam_points[:, 1].min() else 1
@@ -68,9 +67,10 @@ def compute_rotation_matrix(scaled_slam_points, gps_points):
 
     return R.from_matrix(R_matrix)
 
-def transform_slam_points(scaled_slam_points, rotation, centroid_slam, centroid_gps):
+def transform_slam_points(scaled_slam_points, rotation, centroid_slam, translation_vector):
     rotation_matrix = rotation.as_matrix()
-    return (np.dot(scaled_slam_points, rotation_matrix.T)) + (centroid_gps - np.dot(centroid_slam, rotation_matrix.T))
+    rotated_points = np.dot(scaled_slam_points - centroid_slam, rotation_matrix.T)
+    return rotated_points + translation_vector
 
 if __name__ == "__main__":
     input_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/Merged_results_GPS_xyz/merged_output_{datasetnumber}.txt'
@@ -83,7 +83,8 @@ if __name__ == "__main__":
 
     rotation = compute_rotation_matrix(scaled_slam_points, gps_points)
     centroid_slam, centroid_gps = get_centroid(slam_points, gps_points)
-    transformed_slam_points = transform_slam_points(scaled_slam_points, rotation, centroid_slam, centroid_gps)
+    translation_vector = centroid_gps - np.mean(np.dot(scaled_slam_points, rotation.as_matrix().T), axis=0)
+    transformed_slam_points = transform_slam_points(scaled_slam_points, rotation, centroid_slam, translation_vector)
 
     try:
         with open(output_path, 'w') as output_file:
@@ -100,3 +101,4 @@ if __name__ == "__main__":
 
     print(f"Transformation complete. Scale factors: {scaling_factors}")
     print(f"Rotation matrix:\n{rotation.as_matrix()}")
+    print(f"Translation vector: {translation_vector}")
