@@ -1,3 +1,5 @@
+#this is trying ChatGPT suggestion
+
 import numpy as np
 
 datasetnumber = 5
@@ -37,7 +39,8 @@ def compute_transformation(slam_points, gps_points):
     centroid_slam = np.mean(slam_points, axis=0)
     centroid_gps = np.mean(gps_points, axis=0)
     
-    translation_vector = np.array([0.0, 0.0, 0.0])
+    translation_vector = centroid_gps-centered_slam
+    # translation_vector = np.array([0.0, 0.0, 0.0])
 
     centered_slam = slam_points - centroid_slam
     centered_gps = gps_points - centroid_gps

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import os
 
-datasetnumber = 1
+datasetnumber = 5
 
 def read_first_two_points(file_path):
     """

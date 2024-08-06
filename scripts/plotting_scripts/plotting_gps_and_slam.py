@@ -3,9 +3,9 @@
 import plotly.graph_objs as go
 import os
 
-datasetnumber = 1
+datasetnumber = 5
 gps_type = '_GPS_xyz'
-destination = '_transformed_and_scaled'
+destination = '_my_scale'
 source = '/Scale_B'
 
 chosen_point_index_GPS = 50  # Example index for the chosen point for GPS
