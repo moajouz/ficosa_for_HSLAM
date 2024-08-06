@@ -1,5 +1,4 @@
-#This is my own trial at making a total automatic transformation
-#currently I am trying to only handle the scaling part
+#This is the working scale, it scales hslam to the size of gps
 
 import numpy as np
 
