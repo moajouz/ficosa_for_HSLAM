@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation as R
 
 datasetnumber = 5
 gps_type = '_GPS_xyz'
-destination = '_my_scale_and_transformation'
+destination = '_scale_and_transformation'
 source = '/Scale_B'
 
 def read_data(file_path):
