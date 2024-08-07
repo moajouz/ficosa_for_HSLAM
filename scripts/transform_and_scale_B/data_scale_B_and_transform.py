@@ -1,106 +1,103 @@
-#this is trying ChatGPT suggestion
+#this code contains the scale, rotation and translation that gives only timestamp related points
 
 import numpy as np
+from scipy.spatial.transform import Rotation as R
 
 datasetnumber = 5
+gps_type = '_GPS_xyz'
+destination = '_my_scale_and_transformation'
+source = '/Scale_B'
 
 def read_data(file_path):
-    """
-    Reads data from the given file and returns two lists of corresponding points,
-    along with all the original lines for output.
-    """
     slam_points = []
     gps_points = []
-    all_lines = []  # Store all data lines
-    
-    with open(file_path, 'r') as f:
-        previous_line = None
-        for line in f:
-            # Store each line to all_lines
-            all_lines.append(line.strip())
-            
-            if previous_line is not None:
-                prev_id, prev_timestamp, prev_x, prev_y, prev_z = previous_line.split()
-                curr_id, curr_timestamp, curr_x, curr_y, curr_z = line.split()
-                
-                # Check if previous line was SLAM and current line is GPS
-                if int(prev_id) == 0 and int(curr_id) == 1:
-                    slam_points.append([float(prev_x), float(prev_y), float(prev_z)])
-                    gps_points.append([float(curr_x), float(curr_y), float(curr_z)])
+    timestamps = []
+
+    try:
+        with open(file_path, 'r') as f:
+            previous_line = None
+            for line in f:
+                if previous_line is not None:
+                    prev_id, prev_timestamp, prev_x, prev_y, prev_z = previous_line.split()
+                    curr_id, curr_timestamp, curr_x, curr_y, curr_z = line.split()
                     
-            previous_line = line    
-    
-    return np.array(slam_points), np.array(gps_points), all_lines
+                    if int(prev_id) == 0 and int(curr_id) == 1:
+                        slam_points.append([float(prev_x), float(prev_y), float(prev_z)])
+                        gps_points.append([float(curr_x), float(curr_y), float(curr_z)])
+                        # Convert timestamps to integers
+                        timestamps.append(int(float(prev_timestamp)))  # Convert float timestamp to int
+                        timestamps.append(int(float(curr_timestamp)))  # Convert float timestamp to int
+                        
+                previous_line = line
+    except FileNotFoundError:
+        print(f"Error: The file {file_path} does not exist.")
+        raise
+    except ValueError:
+        print(f"Error: File {file_path} contains invalid data.")
+        raise
 
-def compute_transformation(slam_points, gps_points):
-    """
-    Computes the translation, rotation, and scale factor between two sets of corresponding points.
-    """
-    centroid_slam = np.mean(slam_points, axis=0)
-    centroid_gps = np.mean(gps_points, axis=0)
-    
-    translation_vector = centroid_gps-centered_slam
-    # translation_vector = np.array([0.0, 0.0, 0.0])
+    return np.array(slam_points), np.array(gps_points), np.array(timestamps)
 
-    centered_slam = slam_points - centroid_slam
-    centered_gps = gps_points - centroid_gps
-    
-    H = np.dot(centered_slam.T, centered_gps)
-    U, S, Vt = np.linalg.svd(H)
+def compute_scaling_factors(slam_points, gps_points):
+    s_x = (gps_points[:, 0].max() - gps_points[:, 0].min()) / (slam_points[:, 0].max() - slam_points[:, 0].min()) if slam_points[:, 0].max() != slam_points[:, 0].min() else 1
+    s_y = (gps_points[:, 1].max() - gps_points[:, 1].min()) / (slam_points[:, 1].max() - slam_points[:, 1].min()) if slam_points[:, 1].max() != slam_points[:, 1].min() else 1
+    s_z = (gps_points[:, 2].max() - gps_points[:, 2].min()) / (slam_points[:, 2].max() - slam_points[:, 2].min()) if slam_points[:, 2].max() != slam_points[:, 2].min() else 1
+
+    return np.array([s_x, s_y, s_z])
+
+def scale_slam_points(slam_points, scaling_factors):
+    return slam_points * scaling_factors
+
+def compute_rotation_matrix(scaled_slam_points, gps_points):
+    centroid_slam, centroid_gps = np.mean(scaled_slam_points, axis=0), np.mean(gps_points, axis=0)
+    scaled_slam_centered = scaled_slam_points - centroid_slam
+    gps_centered = gps_points - centroid_gps
+
+    H = np.dot(scaled_slam_centered.T, gps_centered)
+
+    U, _, Vt = np.linalg.svd(H)
     R_matrix = np.dot(Vt.T, U.T)
     
     if np.linalg.det(R_matrix) < 0:
         Vt[-1, :] *= -1
         R_matrix = np.dot(Vt.T, U.T)
-    
-    # Compute scale factor (try both variations if needed)
-    # scale_factor = np.sum(distances_slam) / np.sum(distances_gps)
-    scale_factor = np.sum(np.linalg.norm(centered_gps, axis=1)) / np.sum(np.linalg.norm(centered_slam, axis=1))
-    
-    return translation_vector, R_matrix, scale_factor
 
-def apply_transformation(gps_point, translation_vector, R_matrix, scale_factor):
-    """
-    Applies the computed transformation to a single GPS point.
-    """
-    return scale_factor * np.dot(gps_point, R_matrix.T) + translation_vector
+    return R.from_matrix(R_matrix)
 
-def transform_and_output_data(file_path, output_path):
-    """
-    Reads the data, computes the transformation, and outputs the transformed data
-    to a new file.
-    """
-    # Step 3: Identify Corresponding Points and read all data
-    slam_points, gps_points, all_lines = read_data(file_path)
-    
-    # Check that we have enough points
-    if len(slam_points) == 0 or len(gps_points) == 0:
-        print("No corresponding points found.")
-        return
-    
-    # Step 4: Determine Transformation Parameters
-    translation_vector, R_matrix, scale_factor = compute_transformation(slam_points, gps_points)
-    
-    # Step 5: Apply the Transformation and output all data
-    with open(output_path, 'w') as output_file:
-        for line in all_lines:
-            id, timestamp, x, y, z = line.split()
-            if int(id) == 1:  # GPS point
-                # Apply transformation to GPS point
-                gps_point = np.array([float(x), float(y), float(z)])
-                transformed_point = apply_transformation(gps_point, translation_vector, R_matrix, scale_factor)
-                # Write transformed GPS point
-                output_file.write(f"1 {timestamp} {transformed_point[0]} {transformed_point[1]} {transformed_point[2]}\n")
-            else:
-                # Write SLAM data without modification
-                output_file.write(f"{line}\n")
+def transform_slam_points(scaled_slam_points, rotation):
+    rotation_matrix = rotation.as_matrix()
+    return np.dot(scaled_slam_points, rotation_matrix.T)
+
+def translate_to_first_point(transformed_slam_points, gps_points):
+    translation_vector = gps_points[0] - transformed_slam_points[0]
+    return transformed_slam_points + translation_vector
 
 if __name__ == "__main__":
-    input_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/Merged_results_GPS_xyz/merged_output_{datasetnumber}.txt'  # Input file path
-    output_file =  f'/home/mooo/aub/datasets/ficosa_for_HSLAM/Scale_B/Merged_results_GPS_xyz_transformed_and_scaled/merged_output_{datasetnumber}_transformed_and_scaled.txt'  # Output file path
-    
-    # Remove the contents of the output file if it already exists
-    open(output_file, 'w').close()
-    
-    transform_and_output_data(input_file, output_file)
-    print(f'done {datasetnumber}')
+    input_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/Merged_results{gps_type}/merged_output_{datasetnumber}.txt'
+    output_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Merged_results{gps_type}{destination}/merged_output_{datasetnumber}{destination}.txt'
+  
+    slam_points, gps_points, timestamps = read_data(input_path)
+
+    scaling_factors = compute_scaling_factors(slam_points, gps_points)
+    scaled_slam_points = scale_slam_points(slam_points, scaling_factors)
+
+    rotation = compute_rotation_matrix(scaled_slam_points, gps_points)
+    transformed_slam_points = transform_slam_points(scaled_slam_points, rotation)
+
+    translated_slam_points = translate_to_first_point(transformed_slam_points, gps_points)
+
+    try:
+        with open(output_path, 'w') as output_file:
+            for i in range(len(timestamps) // 2):
+                timestamp_slam = timestamps[2 * i]
+                timestamp_gps = timestamps[2 * i + 1]
+                coordinates_slam = translated_slam_points[i]
+                coordinates_gps = gps_points[i]
+                output_file.write(f"0 {timestamp_slam} {coordinates_slam[0]:.6f} {coordinates_slam[1]:.6f} {coordinates_slam[2]:.6f}\n")
+                output_file.write(f"1 {timestamp_gps} {coordinates_gps[0]:.6f} {coordinates_gps[1]:.6f} {coordinates_gps[2]:.6f}\n")
+    except IOError:
+        print(f"Error: Unable to write to file {output_path}.")
+        raise
+
+    print(f"Transformation complete. Scale factors: {scaling_factors}")
+    print(f"Rotation matrix:\n{rotation.as_matrix()}")

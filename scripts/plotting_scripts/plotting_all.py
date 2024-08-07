@@ -5,15 +5,16 @@ import plotly.graph_objects as go
 import os
 
 # Define dataset number and destination
-datasetnumber = 11
+datasetnumber = 5
 gps_type = '_GPS_xyz'
-destination = '_transformed_auto'
+destination = '_my_scale_and_transformation'
+source = '/Scale_B'
 
 # Define file paths using dataset number and destination
-merged_output_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/Merged_results{gps_type}{destination}/merged_output_{datasetnumber}{destination}.txt'
-ekf_result_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/Results_EKF{gps_type}{destination}/ekf_result_{datasetnumber}.txt'
-output_2d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/Results_EKF{gps_type}{destination}/2D_Plots'
-output_3d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/Results_EKF{gps_type}{destination}/3D_Plots'
+merged_output_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Merged_results{gps_type}{destination}/merged_output_{datasetnumber}{destination}.txt'
+ekf_result_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Results_EKF{gps_type}{destination}/ekf_result_{datasetnumber}.txt'
+output_2d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Results_EKF{gps_type}{destination}/2D_Plots'
+output_3d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Results_EKF{gps_type}{destination}/3D_Plots'
 
 # Read merged output file
 merged_data = pd.read_csv(merged_output_file, delim_whitespace=True, header=None, names=['id', 'timestamp', 'x', 'y', 'z'])
