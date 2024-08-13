@@ -1,0 +1,2 @@
+so many nan values were appearing, cannot work on this without scale or transformation?
+

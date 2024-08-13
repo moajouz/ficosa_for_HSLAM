@@ -3,10 +3,8 @@
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-datasetnumber = 5
-gps_type = '_GPS_xyz'
-destination = '_scale_and_transformation'
-source = '/Scale_B'
+datasetnumber = '4_may'
+destination = 'Transformed_manual'
 
 def read_data(file_path):
     slam_points = []
@@ -73,8 +71,8 @@ def translate_to_first_point(transformed_slam_points, gps_points):
     return transformed_slam_points + translation_vector
 
 if __name__ == "__main__":
-    input_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/Merged_results{gps_type}/merged_output_{datasetnumber}.txt'
-    output_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Merged_results{gps_type}{destination}/merged_output_{datasetnumber}{destination}.txt'
+    input_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/Merged_results/merged_output_{datasetnumber}.txt'
+    output_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/{destination}/merged_output_{datasetnumber}.txt'
   
     slam_points, gps_points, timestamps = read_data(input_path)
 

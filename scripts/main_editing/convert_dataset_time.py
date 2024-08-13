@@ -1,7 +1,9 @@
 # Open the input file containing timestamps
 
-input_file = '/home/mooo/aub/datasets/ficosa_datasets/FICOSA_dataserts_122023/ficosa11-20231221_104950/compressed_images/0/timestamps.txt'
-output_file = '/home/mooo/aub/datasets/ficosa_for_HSLAM/ficosa11/times.txt'
+dataset_number= 4
+
+input_file = f'/home/mooo/aub/datasets/aub_zip_video_ficosa_for_HSLAM/ficosa{dataset_number}/timestamps.txt'
+output_file = f'/home/mooo/aub/datasets/aub_zip_video_ficosa_for_HSLAM/ficosa{dataset_number}/times.txt'
 
 with open(input_file, 'r') as f_in, open(output_file, 'w') as f_out:
     line_number = 0

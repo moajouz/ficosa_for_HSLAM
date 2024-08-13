@@ -3,18 +3,17 @@
 import plotly.graph_objs as go
 import os
 
-datasetnumber = 5
-gps_type = '_GPS_xyz'
-destination = '_my_scale_and_transformation'
-source = '/Scale_B'
+datasetnumber = '4_may'
+destination = 'Transformed_manual'
+source = '/new_camera'
 
 chosen_point_index_GPS = 50  # Example index for the chosen point for GPS
-chosen_point_index_SLAM = 30  # Example index for the chosen point for SLAM
+chosen_point_index_SLAM = 20  # Example index for the chosen point for SLAM
 
 # Define the input and output file paths
-data_file_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Merged_results{gps_type}{destination}/merged_output_{datasetnumber}{destination}.txt'
-output_dir_2d = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Merged_results{gps_type}{destination}/2D'
-output_dir_3d = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Merged_results{gps_type}{destination}/3D'
+data_file_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/merged_output_{datasetnumber}.txt'
+output_dir_2d = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/2D'
+output_dir_3d = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/3D'
 
 # Create output directories if they do not exist
 os.makedirs(output_dir_2d, exist_ok=True)

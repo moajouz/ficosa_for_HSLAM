@@ -1,10 +1,8 @@
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-datasetnumber = 5
-gps_type = '_GPS_xyz'
-destination = '_my_scale_and_transformation'
-source = '/Scale_B'
+datasetnumber = 11
+destination = 'Transformed_manual'
 
 def read_data(file_path):
     slam_points = []
@@ -22,9 +20,8 @@ def read_data(file_path):
                     if int(prev_id) == 0 and int(curr_id) == 1:
                         slam_points.append([float(prev_x), float(prev_y), float(prev_z)])
                         gps_points.append([float(curr_x), float(curr_y), float(curr_z)])
-                        # Convert timestamps to integers
-                        timestamps.append(int(float(prev_timestamp)))  # Convert float timestamp to int
-                        timestamps.append(int(float(curr_timestamp)))  # Convert float timestamp to int
+                        timestamps.append(int(float(prev_timestamp)))
+                        timestamps.append(int(float(curr_timestamp)))
                         
                 previous_line = line
     except FileNotFoundError:
@@ -62,37 +59,63 @@ def compute_rotation_matrix(scaled_slam_points, gps_points):
 
     return R.from_matrix(R_matrix)
 
-def transform_slam_points(scaled_slam_points, rotation):
+def rotate_slam_points(scaled_slam_points, rotation):
     rotation_matrix = rotation.as_matrix()
     return np.dot(scaled_slam_points, rotation_matrix.T)
 
-def translate_to_first_point(transformed_slam_points, gps_points):
+def get_translation_vector(transformed_slam_points, gps_points):
     translation_vector = gps_points[0] - transformed_slam_points[0]
-    return transformed_slam_points + translation_vector
+    return translation_vector
+
+def transform_slam_point(slam, scale, rotation, translation):
+    # Reshape the SLAM point to a 2D array for matrix operations
+    scaled_slam = scale_slam_points(slam.reshape(1, -1), scale)
+    
+    # Apply rotation
+    rotated_slam = rotate_slam_points(scaled_slam, rotation)
+    
+    # Apply translation and flatten to convert back to 1D array
+    transformed_slam = rotated_slam + translation
+    return transformed_slam.flatten()
 
 if __name__ == "__main__":
-    input_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/Merged_results{gps_type}/merged_output_{datasetnumber}.txt'
-    output_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Merged_results{gps_type}{destination}/merged_output_{datasetnumber}{destination}.txt'
-  
+    input_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/Merged_results/merged_output_{datasetnumber}.txt'
+    output_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/{destination}/merged_output_{datasetnumber}.txt'
+
     slam_points, gps_points, timestamps = read_data(input_path)
 
     scaling_factors = compute_scaling_factors(slam_points, gps_points)
     scaled_slam_points = scale_slam_points(slam_points, scaling_factors)
-
     rotation = compute_rotation_matrix(scaled_slam_points, gps_points)
-    transformed_slam_points = transform_slam_points(scaled_slam_points, rotation)
+    transformed_slam_points = rotate_slam_points(scaled_slam_points, rotation)
+    translation_vector = get_translation_vector(transformed_slam_points, gps_points)
+    
+    output = []
+    modified_coordinate = []
 
-    translated_slam_points = translate_to_first_point(transformed_slam_points, gps_points)
+    try:
+        with open(input_path, 'r') as f:
+            for line in f:
+                id, times, x, y, z = line.split()
+                
+                if int(id) == 0:
+                    slam_input_points = np.array([float(x), float(y), float(z)])
+                    modified_coordinate = transform_slam_point(slam_input_points, scaling_factors, rotation, translation_vector)
+                    output.append([int(id), int(float(times)), modified_coordinate[0], modified_coordinate[1], modified_coordinate[2]])
+                else:
+                    output.append([int(id), int(float(times)), float(x), float(y), float(z)])
+
+    except FileNotFoundError:
+        print(f"Error: The file {input_path} does not exist.")
+        raise
+    except ValueError:
+        print(f"Error: File {input_path} contains invalid data.")
+        raise
 
     try:
         with open(output_path, 'w') as output_file:
-            for i in range(len(timestamps) // 2):
-                timestamp_slam = timestamps[2 * i]
-                timestamp_gps = timestamps[2 * i + 1]
-                coordinates_slam = translated_slam_points[i]
-                coordinates_gps = gps_points[i]
-                output_file.write(f"0 {timestamp_slam} {coordinates_slam[0]:.6f} {coordinates_slam[1]:.6f} {coordinates_slam[2]:.6f}\n")
-                output_file.write(f"1 {timestamp_gps} {coordinates_gps[0]:.6f} {coordinates_gps[1]:.6f} {coordinates_gps[2]:.6f}\n")
+            for record in output:
+                output_file.write(f"{record[0]} {record[1]} {record[2]:.6f} {record[3]:.6f} {record[4]:.6f}\n")    
     except IOError:
         print(f"Error: Unable to write to file {output_path}.")
         raise

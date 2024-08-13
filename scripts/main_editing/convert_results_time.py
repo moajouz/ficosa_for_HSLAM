@@ -1,3 +1,5 @@
+dataset = '4_may'
+
 def process_data(input_file, output_file):
     # Open the input file for reading and the output file for writing
     with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
@@ -14,7 +16,7 @@ def process_data(input_file, output_file):
 
 # Specify the input and output file paths
 input_file = '/home/mooo/HSLAM/build/result.txt'
-output_file = '/home/mooo/aub/datasets/ficosa_for_HSLAM/HSLAM_Results/Hslam_ficosa_11.txt'
+output_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/HSLAM_Results_May/Hslam_ficosa_{dataset}.txt'
  
 # Run the processing function
 process_data(input_file, output_file)
