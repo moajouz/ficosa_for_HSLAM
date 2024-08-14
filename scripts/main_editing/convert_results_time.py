@@ -7,8 +7,10 @@ def process_data(input_file, output_file):
         for line in infile: 
             # Split the line into individual values
             values = line.split()
-            # Convert the first column to a 16-digit integer
-            first_value = int(float(values[0]) * 1e-3)
+            # Convert the first column to a 16-digit integer for december dataset
+            # first_value = int(float(values[0]) * 1e-3)
+            #for may dataset
+            first_value = int(float(values[0]))
             # Reconstruct the line with the new first value and the remaining original values
             processed_line = f"{first_value} " + " ".join(values[1:]) + "\n"
             # Write the processed line to the output file
