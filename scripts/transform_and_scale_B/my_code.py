@@ -3,7 +3,7 @@
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-datasetnumber = 11
+datasetnumber = '4_may'
 destination = 'Transformed_manual'
 
 def read_data(file_path):
@@ -83,6 +83,9 @@ def transform_slam_point(slam, scale, rotation, translation):
 if __name__ == "__main__":
     input_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/Merged_results/merged_output_{datasetnumber}.txt'
     output_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/{destination}/merged_output_{datasetnumber}.txt'
+
+    # input_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/Merged_results/merged_output_{datasetnumber}.txt'
+    # output_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/{destination}/merged_output_{datasetnumber}.txt'
 
     slam_points, gps_points, timestamps = read_data(input_path)
 

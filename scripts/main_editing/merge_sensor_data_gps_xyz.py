@@ -49,7 +49,7 @@ def load_gps_data(csv_path):
 def main():
     hslam_file_path = f"/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/HSLAM_Results/Hslam_ficosa_{dataset}.txt"
     gps_file_path = f"/home/mooo/aub/datasets/ficosa_for_HSLAM/FICOSA_trajectories/ficosa{dataset}_odometry.csv"
-    output_file_path = f"/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/Merged_results_GPS_xyz/merged_output_{dataset}.txt"
+    output_file_path = f"/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/Merged_results/merged_output_{dataset}.txt"
 
     # Load data
     hslam_data = load_hslam_data(hslam_file_path)

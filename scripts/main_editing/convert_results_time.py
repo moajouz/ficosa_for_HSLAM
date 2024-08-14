@@ -18,7 +18,7 @@ def process_data(input_file, output_file):
 
 # Specify the input and output file paths
 input_file = '/home/mooo/HSLAM/build/result.txt'
-output_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/HSLAM_Results_May/Hslam_ficosa_{dataset}.txt'
+output_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/HSLAM_Results/Hslam_ficosa_{dataset}.txt'
  
 # Run the processing function
 process_data(input_file, output_file)
