@@ -6,14 +6,16 @@ import os
 datasetnumber = 9
 destination = 'Transformed_manual'
 source = '/new_camera'
-
+datasetnumber = '2_may'
+destination = 'Auto_EKF'
+source = '/new_camera'  
 chosen_point_index_GPS = 20  # Example index for the chosen point for GPS
 chosen_point_index_SLAM = 3  # Example index for the chosen point for SLAM
 
 # Define the input and output file paths
-data_file_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/old_camera/Scale_B/Merged_results_GPS_xyz_my_scale_and_transformation/merged_output_{datasetnumber}_my_scale_and_transformation.txt'
-output_dir_2d = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/old_camera/Scale_B/Merged_results_GPS_xyz_my_scale_and_transformation/2D'
-output_dir_3d = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/old_camera/Scale_B/Merged_results_GPS_xyz_my_scale_and_transformation/3D'
+data_file_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/merged_output_{datasetnumber}.txt'
+output_dir_2d = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/2D'
+output_dir_3d =  f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/3D'
 
 # data_file_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/merged_output_{datasetnumber}.txt'
 # output_dir_2d = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/2D'

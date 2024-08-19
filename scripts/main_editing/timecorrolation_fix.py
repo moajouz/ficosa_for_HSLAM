@@ -1,6 +1,6 @@
 # the use of this code is to make the data in the txt files be hslam data followed by gps data and removing any other data that won't be published to the ekf
 
-dataset=1
+dataset='5'
 # Define input and output file names
 input_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/Transformed_manual/merged_output_{dataset}.txt'  # Replace with your input file name
 output_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/Transformed_manual_corrolated/merged_output_{dataset}.txt'  # Replace with your desired output file name

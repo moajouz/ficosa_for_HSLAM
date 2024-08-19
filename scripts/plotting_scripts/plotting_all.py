@@ -5,27 +5,27 @@ import plotly.graph_objects as go
 import os
 
 # Define dataset number and destination for old cam
-datasetnumber = 9
-gps_type = '_GPS_xyz'
-destination = '_my_scale_and_transformation'
-source = '/old_camera/Scale_B'
-
-# Define file paths using dataset number and destination
-merged_output_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Merged_results{gps_type}{destination}/merged_output_{datasetnumber}{destination}.txt'
-ekf_result_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Results_EKF{gps_type}{destination}/ekf_result_{datasetnumber}.txt'
-output_2d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Results_EKF{gps_type}{destination}/2D_Plots'
-output_3d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Results_EKF{gps_type}{destination}/3D_Plots'
-
-# # Define dataset number and destination for new cam
-# datasetnumber = '3_may'
-# destination = 'EKF_Transformed_manual_corrolated'
-# source = '/new_camera'
+# datasetnumber = 9
+# gps_type = '_GPS_xyz'
+# destination = '_my_scale_and_transformation'
+# source = '/old_camera/Scale_B'
 
 # # Define file paths using dataset number and destination
-# merged_output_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Transformed_manual_corrolated/merged_output_{datasetnumber}.txt'
-# ekf_result_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/ekf_result_{datasetnumber}.txt'
-# output_2d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/2D_Plots'
-# output_3d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/3D_Plots'
+# merged_output_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Merged_results{gps_type}{destination}/merged_output_{datasetnumber}{destination}.txt'
+# ekf_result_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Results_EKF{gps_type}{destination}/ekf_result_{datasetnumber}.txt'
+# output_2d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Results_EKF{gps_type}{destination}/2D_Plots'
+# output_3d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Results_EKF{gps_type}{destination}/3D_Plots'
+
+# Define dataset number and destination for new cam
+datasetnumber = '2_may'
+destination = 'Auto_EKF'
+source = '/new_camera'
+
+# Define file paths using dataset number and destination
+merged_output_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/merged_output_{datasetnumber}.txt'
+ekf_result_file = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/ekf_result_{datasetnumber}.txt'
+output_2d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/2D_Plots'
+output_3d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/3D_Plots'
 
 # Read merged output file
 merged_data = pd.read_csv(merged_output_file, delim_whitespace=True, header=None, names=['id', 'timestamp', 'x', 'y', 'z'])
