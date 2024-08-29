@@ -1,6 +1,7 @@
 #merges the gps lla with hslam in timestamp order
 
 import csv
+dataset = '1_may'
 
 # Define a class to store data with IDs
 class DataWithID:
@@ -45,9 +46,9 @@ def load_gps_data(csv_path):
     return gps_data_list
 
 def main():
-    hslam_file_path = "/home/mooo/aub/datasets/ficosa_for_HSLAM/HSLAM_Results/Hslam_ficosa_1.txt"
-    gps_file_path = "/home/mooo/aub/datasets/ficosa_for_HSLAM/FICOSA_trajectories/ficosa1_odometry.csv"
-    output_file_path = "/home/mooo/aub/datasets/ficosa_for_HSLAM/Merged_results/merged_output_1.txt"
+    hslam_file_path = f"/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/HSLAM_Results/Hslam_ficosa_{dataset}.txt"
+    gps_file_path = f"/home/mooo/aub/datasets/ficosa_for_HSLAM/FICOSA_trajectories/ficosa{dataset}_odometry.csv"
+    output_file_path = f"/home/mooo/aub/datasets/ficosa_for_HSLAM/new_camera/Merged_results_LLA/merged_output_{dataset}.txt"
 
     # Load data
     hslam_data = load_hslam_data(hslam_file_path)

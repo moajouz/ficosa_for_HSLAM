@@ -3,7 +3,7 @@
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-datasetnumber = '5'
+datasetnumber = '4_may'
 destination = 'Transformed_manual'
 
 def read_data(file_path):
@@ -127,3 +127,4 @@ if __name__ == "__main__":
 
     print(f"Transformation complete. Scale factors: {scaling_factors}")
     print(f"Rotation matrix:\n{rotation.as_matrix()}")
+    print(f"translation vector:\n{translation_vector}")

@@ -17,7 +17,7 @@ import os
 # output_3d_folder = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/Results_EKF{gps_type}{destination}/3D_Plots'
 
 # Define dataset number and destination for new cam
-datasetnumber = '2_may'
+datasetnumber = '4_may' 
 destination = 'Auto_EKF'
 source = '/new_camera'
 

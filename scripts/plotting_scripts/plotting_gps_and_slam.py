@@ -3,14 +3,11 @@
 import plotly.graph_objs as go
 import os
 
-datasetnumber = 9
-destination = 'Transformed_manual'
-source = '/new_camera'
-datasetnumber = '2_may'
-destination = 'Auto_EKF'
+datasetnumber = '1_may'
+destination = 'Merged_results_LLA'
 source = '/new_camera'  
 chosen_point_index_GPS = 20  # Example index for the chosen point for GPS
-chosen_point_index_SLAM = 3  # Example index for the chosen point for SLAM
+chosen_point_index_SLAM = 30  # Example index for the chosen point for SLAM
 
 # Define the input and output file paths
 data_file_path = f'/home/mooo/aub/datasets/ficosa_for_HSLAM{source}/{destination}/merged_output_{datasetnumber}.txt'
